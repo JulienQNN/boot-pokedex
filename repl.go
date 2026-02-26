@@ -7,10 +7,12 @@ import (
 	"strings"
 
 	"github.com/JulienQNN/boot-pokedex/internal/pokeapi"
+	"github.com/JulienQNN/boot-pokedex/internal/pokecache"
 )
 
 type config struct {
-	pokeapiClient pokeapi.Client
+	pokeapiClient    pokeapi.Client
+	pokecache        pokecache.Cache
 	prevLocationsURL *string
 	nextLocationsURL *string
 }
