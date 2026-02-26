@@ -13,6 +13,7 @@ import (
 type config struct {
 	pokeapiClient    pokeapi.Client
 	pokecache        pokecache.Cache
+	caughtPokemonNames map[string]pokeapi.Pokemon
 	prevLocationsURL *string
 	nextLocationsURL *string
 }
@@ -28,7 +29,8 @@ func startRepl(cfg *config) {
 			continue
 		}
 		if cmd, ok := commandRegistry()[cleanedInput[0]]; ok {
-			err := cmd.callback(cfg)
+			args := cleanedInput[1:]
+			err := cmd.callback(cfg, args)
 			if err != nil {
 				fmt.Printf("Error executing command '%s': %s\n", cmd.name, err.Error())
 			}
@@ -47,7 +49,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, []string) error
 }
 
 func commandRegistry() map[string]cliCommand {
@@ -71,6 +73,26 @@ func commandRegistry() map[string]cliCommand {
 			name:        "mapb",
 			description: "Display the map of the Pokemon world (backwards)",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore the locations of the Pokemon world",
+			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a Pokemon",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect a Pokemon",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Inspect a pokedex",
+			callback:    commandPokedex,
 		},
 	}
 }
